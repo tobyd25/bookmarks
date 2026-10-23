@@ -40,6 +40,8 @@ fastify.setErrorHandler((error, request, reply) => {
 
 fastify.register(import('./database.js'))
 
+fastify.register(import('./modules/entries/entries.routes.js'))
+
 fastify.listen({ port: process.env.PORT || 3000, host: process.env.HOST || "127.0.0.1"}, (err, address) => {
     if (err) {
         fastify.log.error(err)
