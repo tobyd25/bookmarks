@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import fp from 'fastify-plugin'
 import Database from 'better-sqlite3'
+import type { DbClient } from './types/db-client.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -13,7 +14,7 @@ export default fp((fastify) => {
     db.exec('PRAGMA foreign_keys = ON')
     db.exec(schema)
     
-    fastify.decorate('db', {
+    const dbClient: DbClient = {
         get: (sql: string, params = []) => {
             return db.prepare(sql).get(...params)
         },
@@ -25,7 +26,9 @@ export default fp((fastify) => {
         run: (sql: string, params = []) => {
             return db.prepare(sql).run(...params)
         }
-    })
+    }
+
+    fastify.decorate('db', dbClient)
 
     fastify.addHook("onClose", () => {
         db.close()
