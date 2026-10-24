@@ -11,11 +11,18 @@ export const createEntry = (db: DbClient) => {
 export const putEntry = (
 	db: DbClient,
 	id: number,
-	title: string,
-	content: string,
-	type: string,
-	note: string,
+	title: string | undefined,
+	content: string | undefined,
+	type: string | undefined,
+	note: string | undefined,
 ) => {
+	const entry = db.get("SELECT * FROM entries WHERE id = ?", [id]);
+
+	if (title === undefined) title = entry.title;
+	if (content === undefined) content = entry.content;
+	if (type === undefined) type = entry.type;
+	if (note === undefined) note = entry.note;
+
 	return db.run("UPDATE entries SET title = ?, content = ?, type = ?, note = ? WHERE id = ?", [
 		title,
 		content,

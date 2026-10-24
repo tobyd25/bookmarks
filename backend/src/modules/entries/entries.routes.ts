@@ -6,14 +6,14 @@ interface EntryParams {
 	id: number;
 }
 
-type PutEntryDto = Static<typeof PutEntrySchema>;
-
-const PutEntrySchema = Type.Object({
-	title: Type.String(),
-	content: Type.String(),
-	type: Type.String(),
-	note: Type.String(),
+const PutEntryDto = Type.Object({
+	title: Type.Optional(Type.String()),
+	content: Type.Optional(Type.String()),
+	type: Type.Optional(Type.String()),
+	note: Type.Optional(Type.String()),
 });
+
+type PutEntry = Static<typeof PutEntryDto>;
 
 export default (fastify: FastifyInstance) => {
 	fastify.get("/entries", () => {
@@ -24,20 +24,10 @@ export default (fastify: FastifyInstance) => {
 		reply.code(201).send(createEntry(fastify.db));
 	});
 
-	fastify.put<{ Params: EntryParams; Body: PutEntryDto }>(
-		"/entries/:id",
-		{
-			schema: {
-				response: {
-					200: PutEntrySchema,
-				},
-			},
-		},
-		(request, reply) => {
-			const { id } = request.params;
-			const { title, content, type, note } = request.body;
+	fastify.put<{ Params: EntryParams; Body: PutEntry }>("/entries/:id", (request, reply) => {
+		const { id } = request.params;
+		const { title, content, type, note } = request.body;
 
-			reply.send(putEntry(fastify.db, id, title, content, type, note));
-		},
-	);
+		reply.send(putEntry(fastify.db, id, title, content, type, note));
+	});
 };
