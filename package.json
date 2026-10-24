@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:frontend": "pnpm --dir frontend run dev",
+    "dev:backend": "pnpm --dir backend run dev",
+    "dev": "concurrently --names \"FRONTEND,BACKEND\" --prefix-colors \"blue,green\" \"pnpm run dev:frontend\" \"pnpm run dev:backend\""
   },
   "keywords": [],
   "author": "",
