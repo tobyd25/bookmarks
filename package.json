@@ -15,5 +15,10 @@
   "devDependencies": {
     "concurrently": "^10.0.6",
     "prettier": "3.9.10"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "daisyui": "^5.7.50",
+    "tailwindcss": "^4.3.3"
   }
 }
