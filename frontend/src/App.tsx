@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
+import CreateItemModal from "./components/CreateItemModal";
 
 interface Entry {
 	id: number;
@@ -12,6 +13,9 @@ interface Entry {
 
 function App() {
 	const [entries, setEntries] = useState<Entry[]>([]);
+	const createItemModalRef = useRef<HTMLDialogElement>(null);
+
+	const openCreateModal = () => createItemModalRef.current?.showModal();
 
 	useEffect(() => {
 		const getEntries = async () => {
@@ -32,6 +36,12 @@ function App() {
 
 	return (
 		<div className="m-8 mx-48">
+			<button className="btn" onClick={openCreateModal}>
+				Create Item
+			</button>
+
+			<CreateItemModal ref={createItemModalRef} />
+
 			<ul className="list divide-y divide-gray-300">
 				{entries.map((entry) => (
 					<li className="list-row" key={entry.id}>
