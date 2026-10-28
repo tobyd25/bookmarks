@@ -7,6 +7,7 @@ interface Entry {
 	content: string;
 	type: string;
 	note: string;
+	created_at: string;
 }
 
 function App() {
@@ -30,11 +31,21 @@ function App() {
 	}, []);
 
 	return (
-		<>
-			{entries.map((entry) => (
-				<div key={entry.id}>{entry.title}</div>
-			))}
-		</>
+		<div className="m-8 mx-48">
+			<ul className="list divide-y divide-gray-300">
+				{entries.map((entry) => (
+					<li className="list-row" key={entry.id}>
+						<div>
+							<div className="text-[1.5rem]">{entry.title}</div>
+							<div className="text-[1rem]">{entry.content}</div>
+							<div className="text-[1rem] text-gray-500">
+								{entry.created_at}
+							</div>
+						</div>
+					</li>
+				))}
+			</ul>
+		</div>
 	);
 }
 
