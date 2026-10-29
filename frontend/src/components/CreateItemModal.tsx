@@ -26,6 +26,22 @@ const CreateItemModal = forwardRef<HTMLDialogElement, {}>((_props, ref) => {
 							placeholder="Content"
 						></textarea>
 
+						<label className="label">Type</label>
+						<div className="dropdown">
+							<div
+								id="type"
+								tabIndex={0}
+								className="btn btn-outline text-gray-600 border-gray-300 m-0"
+							>
+								Select
+							</div>
+							<ul tabIndex={-1} className="dropdown-content menu bg-gray-100">
+								<li>
+									<button onClick={(e) => e.preventDefault()}>item1</button>
+								</li>
+							</ul>
+						</div>
+
 						<label className="label" htmlFor="note">
 							Note
 						</label>
