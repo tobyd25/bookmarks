@@ -46,7 +46,7 @@ fastify.setErrorHandler((error: Error, request, reply) => {
 fastify.register(import("./database.js"));
 
 fastify.register(import("./modules/entries/entries.routes.js"));
-fastify.register(import("./modules/types/types.route.js"));
+fastify.register(import("./modules/types/types.routes.js"));
 
 fastify.listen(
 	{
