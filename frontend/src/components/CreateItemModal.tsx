@@ -1,6 +1,27 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 
 const CreateItemModal = forwardRef<HTMLDialogElement, {}>((_props, ref) => {
+	const [types, setTypes] = useState<Type[]>([]);
+
+	interface Type {
+		name: string;
+	}
+
+	useEffect(() => {
+		const fetchTypes = async () => {
+			try {
+				const response = await fetch("/api/types");
+				if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+				const data = await response.json();
+				setTypes(data);
+			} catch (error) {
+				console.error(`Failed to fetch types: ${error}`);
+			}
+		};
+
+		fetchTypes();
+	}, []);
+
 	return (
 		<dialog className="modal" ref={ref}>
 			<div className="modal-box p-8">
@@ -36,9 +57,13 @@ const CreateItemModal = forwardRef<HTMLDialogElement, {}>((_props, ref) => {
 								Select
 							</div>
 							<ul tabIndex={-1} className="dropdown-content menu bg-gray-100">
-								<li>
-									<button onClick={(e) => e.preventDefault()}>item1</button>
-								</li>
+								{types.map((type) => (
+									<li>
+										<button onClick={(e) => e.preventDefault()}>
+											{type.name}
+										</button>
+									</li>
+								))}
 							</ul>
 						</div>
 
