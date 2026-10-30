@@ -1,4 +1,15 @@
-import { forwardRef, useEffect, useState, type MouseEvent } from "react";
+import {
+	forwardRef,
+	useEffect,
+	useState,
+	type MouseEvent,
+	type RefObject,
+} from "react";
+
+interface Type {
+	id: number;
+	name: string;
+}
 
 const CreateItemModal = forwardRef<HTMLDialogElement, {}>((_props, ref) => {
 	const [types, setTypes] = useState<Type[]>([]);
@@ -7,11 +18,6 @@ const CreateItemModal = forwardRef<HTMLDialogElement, {}>((_props, ref) => {
 	const [content, setContent] = useState("");
 	const [type, setType] = useState(0);
 	const [note, setNote] = useState("");
-
-	interface Type {
-		id: number;
-		name: string;
-	}
 
 	useEffect(() => {
 		const fetchTypes = async () => {
@@ -66,6 +72,8 @@ const CreateItemModal = forwardRef<HTMLDialogElement, {}>((_props, ref) => {
 		} catch (error) {
 			console.error(`Failed to edit item: ${error}`);
 		}
+
+		(ref as RefObject<HTMLDialogElement>).current?.close();
 	};
 
 	const selectType = (e: MouseEvent, id: number) => {
