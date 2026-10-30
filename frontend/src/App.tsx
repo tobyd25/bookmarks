@@ -17,20 +17,20 @@ function App() {
 
 	const openCreateModal = () => createItemModalRef.current?.showModal();
 
-	useEffect(() => {
-		const getEntries = async () => {
-			try {
-				const response = await fetch("/api/entries");
-				if (!response.ok) {
-					throw new Error(`HTTP error: ${response.status}`);
-				}
-				const data = await response.json();
-				setEntries(data);
-			} catch (error) {
-				console.error(`Error fetching entries: ${error}`);
+	const getEntries = async () => {
+		try {
+			const response = await fetch("/api/entries");
+			if (!response.ok) {
+				throw new Error(`HTTP error: ${response.status}`);
 			}
-		};
+			const data = await response.json();
+			setEntries(data);
+		} catch (error) {
+			console.error(`Error fetching entries: ${error}`);
+		}
+	};
 
+	useEffect(() => {
 		getEntries();
 	}, []);
 
@@ -40,7 +40,7 @@ function App() {
 				Create Item
 			</button>
 
-			<CreateItemModal ref={createItemModalRef} />
+			<CreateItemModal ref={createItemModalRef} onCreate={getEntries} />
 
 			<ul className="list divide-y divide-gray-300">
 				{entries.map((entry) => (
