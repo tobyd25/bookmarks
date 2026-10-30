@@ -13,7 +13,7 @@ export const putEntry = (
 	id: number,
 	title: string | undefined,
 	content: string | undefined,
-	type: string | undefined,
+	type: number | undefined,
 	note: string | undefined,
 ) => {
 	const entry = db.get("SELECT * FROM entries WHERE id = ?", [id]);
@@ -23,11 +23,8 @@ export const putEntry = (
 	if (type === undefined) type = entry.type;
 	if (note === undefined) note = entry.note;
 
-	return db.run("UPDATE entries SET title = ?, content = ?, type = ?, note = ? WHERE id = ?", [
-		title,
-		content,
-		type,
-		note,
-		id,
-	]);
+	return db.run(
+		"UPDATE entries SET title = ?, content = ?, type = ?, note = ? WHERE id = ?",
+		[title, content, type, note, id],
+	);
 };
