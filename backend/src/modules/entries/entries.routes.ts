@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { getEntries, createEntry, putEntry } from "./entries.service.js";
 import { Type, type Static } from "@sinclair/typebox";
+import { AppError } from "../../app-error.js";
 
 interface EntryParams {
 	id: number;
@@ -27,6 +28,9 @@ export default (fastify: FastifyInstance) => {
 	fastify.put<{ Params: EntryParams; Body: PutEntry }>(
 		"/entries/:id",
 		(request, reply) => {
+			if (request.body == undefined) {
+				throw new AppError(400, "Bad Request", "BAD_REQUEST");
+			}
 			const { id } = request.params;
 			const { title, content, type, note } = request.body;
 

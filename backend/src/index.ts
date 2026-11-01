@@ -31,7 +31,9 @@ fastify.setErrorHandler((error: Error, request, reply) => {
 		});
 
 		return reply.status(400).send({
-			error: "Bad Request",
+			error: "BadRequest",
+			message: "Bad Request",
+			code: "BAD_REQUEST",
 		});
 	}
 
