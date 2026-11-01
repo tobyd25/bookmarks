@@ -4,8 +4,21 @@ export const getEntries = (db: DbClient) => {
 	return db.all("SELECT * FROM entries");
 };
 
-export const createEntry = (db: DbClient) => {
-	return db.run("INSERT INTO entries DEFAULT VALUES");
+export const createEmptyEntry = (db: DbClient) => {
+	return db.run("INSERT INTO entries DEFAULT VALUES", []);
+};
+
+export const createEntry = (
+	db: DbClient,
+	title: string | undefined,
+	content: string | undefined,
+	type: number | undefined,
+	note: string | undefined,
+) => {
+	return db.run(
+		"INSERT INTO entries (title, content, type, note) VALUES (?, ?, ?, ?)",
+		[title, content, type, note],
+	);
 };
 
 export const putEntry = (
