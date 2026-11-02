@@ -44,9 +44,23 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 
 		const createItem = async (e: MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault();
+
+			const itemData = {
+				title: title,
+				content: content,
+				type: selectedType.id,
+				note: note,
+			};
+
 			var id;
 			try {
-				const response = await fetch("/api/entries", { method: "POST" });
+				const response = await fetch("/api/entries", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(itemData),
+				});
 				if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
 				const data = await response.json();
 				id = data.lastInsertRowid;
@@ -58,27 +72,6 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 			if (id == undefined) {
 				console.error("Failed to get item id");
 				return;
-			}
-
-			try {
-				const itemData = {
-					title: title,
-					content: content,
-					type: selectedType,
-					note: note,
-				};
-
-				const response = await fetch(`/api/entries/${id}`, {
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(itemData),
-				});
-
-				if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-			} catch (error) {
-				console.error(`Failed to edit item: ${error}`);
 			}
 
 			onCreate();
