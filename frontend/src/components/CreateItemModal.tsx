@@ -21,7 +21,10 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 
 		const [title, setTitle] = useState("");
 		const [content, setContent] = useState("");
-		const [type, setType] = useState(0);
+		const [selectedType, setSelectedType] = useState<Type>({
+			id: 0,
+			name: "None",
+		});
 		const [note, setNote] = useState("");
 
 		useEffect(() => {
@@ -61,7 +64,7 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 				const itemData = {
 					title: title,
 					content: content,
-					type: type,
+					type: selectedType,
 					note: note,
 				};
 
@@ -82,9 +85,9 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 			(ref as RefObject<HTMLDialogElement>).current?.close();
 		};
 
-		const selectType = (e: MouseEvent, id: number) => {
+		const selectType = (e: MouseEvent, type: Type) => {
 			e.preventDefault();
-			setType(id);
+			setSelectedType(type);
 		};
 
 		return (
@@ -123,12 +126,12 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 									tabIndex={0}
 									className="btn btn-outline text-gray-600 border-gray-300 m-0"
 								>
-									Select
+									{selectedType.name}
 								</div>
 								<ul tabIndex={-1} className="dropdown-content menu bg-gray-100">
 									{types.map((type) => (
 										<li key={type.id}>
-											<button onClick={(e) => selectType(e, type.id)}>
+											<button onClick={(e) => selectType(e, type)}>
 												{type.name}
 											</button>
 										</li>
