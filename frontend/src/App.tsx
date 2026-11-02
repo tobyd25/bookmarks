@@ -12,6 +12,8 @@ interface Entry {
 }
 
 function App() {
+	const [searchTerm, setSearchTerm] = useState("");
+
 	const [entries, setEntries] = useState<Entry[]>([]);
 	const createItemModalRef = useRef<HTMLDialogElement>(null);
 
@@ -34,16 +36,50 @@ function App() {
 		getEntries();
 	}, []);
 
+	const filteredEntries = entries.filter(
+		(entry) =>
+			entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			entry.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			entry.note.toLowerCase().includes(searchTerm.toLowerCase()),
+	);
+
 	return (
 		<div className="m-8 mx-48">
-			<button className="btn" onClick={openCreateModal}>
-				Create Item
-			</button>
+			<div className="flex">
+				<label className="input mx-4">
+					<svg
+						className="h-[1em] opacity-50"
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+					>
+						<g
+							strokeLinejoin="round"
+							strokeLinecap="round"
+							strokeWidth="2.5"
+							fill="none"
+							stroke="currentColor"
+						>
+							<circle cx="11" cy="11" r="8"></circle>
+							<path d="m21 21-4.3-4.3"></path>
+						</g>
+					</svg>
+					<input
+						type="search"
+						className="grow"
+						placeholder="Search"
+						onChange={(e) => setSearchTerm(e.target.value)}
+					/>
+				</label>
+
+				<button className="btn" onClick={openCreateModal}>
+					Create Item
+				</button>
+			</div>
 
 			<CreateItemModal ref={createItemModalRef} onCreate={getEntries} />
 
 			<ul className="list divide-y divide-gray-300">
-				{entries.map((entry) => (
+				{filteredEntries.map((entry) => (
 					<li className="list-row" key={entry.id}>
 						<div>
 							<div className="text-[1.5rem]">{entry.title}</div>
