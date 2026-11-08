@@ -10,18 +10,18 @@ interface Props {
 	onCreate: () => void;
 }
 
-interface Type {
+interface ItemType {
 	id: number;
 	name: string;
 }
 
 const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 	({ onCreate }: Props, ref) => {
-		const [types, setTypes] = useState<Type[]>([]);
+		const [types, setTypes] = useState<ItemType[]>([]);
 
 		const [title, setTitle] = useState("");
 		const [content, setContent] = useState("");
-		const [selectedType, setSelectedType] = useState<Type>({
+		const [selectedType, setSelectedType] = useState<ItemType>({
 			id: 0,
 			name: "None",
 		});
@@ -46,13 +46,12 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 			e.preventDefault();
 
 			const itemData = {
-				title: title,
-				content: content,
+				title,
+				content,
 				type: selectedType.id,
-				note: note,
+				note,
 			};
 
-			var id;
 			try {
 				const response = await fetch("/api/entries", {
 					method: "POST",
@@ -61,16 +60,15 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 					},
 					body: JSON.stringify(itemData),
 				});
+
 				if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
 				const data = await response.json();
-				id = data.lastInsertRowid;
+
+				if (!data.lastInsertRowid)
+					throw new Error("Server did not return a valid item ID");
 			} catch (error) {
 				console.error(`Failed to create item: ${error}`);
-				return;
-			}
-
-			if (id == undefined) {
-				console.error("Failed to get item id");
 				return;
 			}
 
@@ -78,7 +76,7 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 			(ref as RefObject<HTMLDialogElement>).current?.close();
 		};
 
-		const selectType = (e: MouseEvent, type: Type) => {
+		const selectType = (e: MouseEvent, type: ItemType) => {
 			e.preventDefault();
 			setSelectedType(type);
 		};
@@ -110,7 +108,7 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 								placeholder="Content"
 								value={content}
 								onChange={(e) => setContent(e.target.value)}
-							></textarea>
+							/>
 
 							<label className="label">Type</label>
 							<div className="dropdown">
