@@ -6,13 +6,10 @@ import {
 	type RefObject,
 } from "react";
 
+import { type ItemType, type ItemData } from "../types/item";
+
 interface Props {
 	onCreate: () => void;
-}
-
-interface ItemType {
-	id: number;
-	name: string;
 }
 
 const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
@@ -45,7 +42,7 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 		const createItem = async (e: MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault();
 
-			const itemData = {
+			const itemData: ItemData = {
 				title,
 				content,
 				type: selectedType.id,
