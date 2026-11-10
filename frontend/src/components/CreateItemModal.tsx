@@ -53,7 +53,7 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 			};
 
 			try {
-				const response = await fetch("/api/entries", {
+				const response = await fetch("/api/items", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

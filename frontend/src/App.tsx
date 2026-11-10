@@ -21,7 +21,7 @@ function App() {
 
 	const getEntries = async () => {
 		try {
-			const response = await fetch("/api/entries");
+			const response = await fetch("/api/items");
 			if (!response.ok) {
 				throw new Error(`HTTP error: ${response.status}`);
 			}
