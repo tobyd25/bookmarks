@@ -46,3 +46,7 @@ export const putItem = (
 		id,
 	]);
 };
+
+export const deleteItem = (db: DbClient, id: number) => {
+	db.run("DELETE FROM items WHERE id = ?", [id]);
+};

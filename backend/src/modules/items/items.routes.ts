@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { getItems, createItem, putItem, createEmptyItem } from "./items.service.js";
+import { getItems, createItem, putItem, createEmptyItem, deleteItem } from "./items.service.js";
 import { Type, type Static } from "@sinclair/typebox";
 import { AppError } from "../../app-error.js";
 
@@ -38,5 +38,10 @@ export default (fastify: FastifyInstance) => {
 		const { title, content, type, note } = request.body;
 
 		reply.send(putItem(fastify.db, id, title, content, type, note));
+	});
+
+	fastify.delete<{ Params: ItemParams }>("/items/:id", (request, reply) => {
+		const { id } = request.params;
+		reply.code(204).send(deleteItem(fastify.db, id));
 	});
 };
