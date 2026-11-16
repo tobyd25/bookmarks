@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import CreateItemModal from "./components/CreateItemModal";
+import EditItemModal from "./components/EditItemModal";
+import { type ItemData } from "./types/item";
 
 interface Entry {
 	id: number;
@@ -15,9 +17,29 @@ function App() {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const [entries, setEntries] = useState<Entry[]>([]);
+
 	const createItemModalRef = useRef<HTMLDialogElement>(null);
+	const [editingItem, setEditingItem] = useState<{
+		data: ItemData;
+		id: number;
+	} | null>(null);
+	const editItemModalRef = useRef<HTMLDialogElement>(null);
 
 	const openCreateModal = () => createItemModalRef.current?.showModal();
+	const openEditModal = (item: Entry) => {
+		setEditingItem({
+			data: {
+				title: item.title,
+				content: item.content,
+				type: parseInt(item.type),
+				note: item.note,
+			},
+			id: item.id,
+		});
+
+		// fix modal not showing on first click
+		setTimeout(() => editItemModalRef.current?.showModal(), 0);
+	};
 
 	const getEntries = async () => {
 		try {
@@ -78,16 +100,31 @@ function App() {
 
 			<CreateItemModal ref={createItemModalRef} onCreate={getEntries} />
 
+			{editingItem && (
+				<EditItemModal
+					ref={editItemModalRef}
+					onEdit={() => {
+						getEntries();
+						setEditingItem(null);
+					}}
+					itemData={editingItem.data}
+					itemId={editingItem.id}
+				/>
+			)}
+
 			<ul className="list divide-y divide-gray-300">
 				{filteredEntries.map((entry) => (
-					<li className="list-row" key={entry.id}>
+					<li className="list-row flex justify-between" key={entry.id}>
 						<div>
 							<div className="text-[1.5rem]">{entry.title}</div>
 							<div className="text-[1rem]">{entry.content}</div>
 							<div className="text-[1rem] text-gray-500">
-								{entry.created_at}
+								Created: {entry.created_at}
 							</div>
 						</div>
+						<button className="btn" onClick={() => openEditModal(entry)}>
+							Edit
+						</button>
 					</li>
 				))}
 			</ul>
