@@ -10,20 +10,33 @@ import { type ItemType, type ItemData } from "../types/item";
 
 interface Props {
 	onEdit: () => void;
+	itemData: ItemData;
 	itemId: number;
 }
 
 const EditItemModal = forwardRef<HTMLDialogElement, Props>(
-	({ onEdit, itemId }: Props, ref) => {
+	({ onEdit, itemData, itemId }: Props, ref) => {
 		const [types, setTypes] = useState<ItemType[]>([]);
 
-		const [title, setTitle] = useState("");
-		const [content, setContent] = useState("");
+		const [title, setTitle] = useState(itemData.title);
+		const [content, setContent] = useState(itemData.content);
+		const [note, setNote] = useState("");
 		const [selectedType, setSelectedType] = useState<ItemType>({
 			id: 0,
 			name: "None",
 		});
-		const [note, setNote] = useState("");
+
+		const getTypeObject = (typeId: number, typeList: ItemType[]) => {
+			for (const t of typeList) {
+				if (t.id == typeId) return t;
+			}
+			console.error(`Error: Failed to get type object of id "${typeId}".`);
+			console.error(types);
+			return {
+				id: 0,
+				name: "None",
+			};
+		};
 
 		useEffect(() => {
 			const fetchTypes = async () => {
@@ -32,13 +45,14 @@ const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 					if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
 					const data = await response.json();
 					setTypes(data);
+					setSelectedType(getTypeObject(itemData.type, data));
 				} catch (error) {
 					console.error(`Failed to fetch types: ${error}`);
 				}
 			};
 
 			fetchTypes();
-		}, []);
+		}, [itemData.type]);
 
 		const editItem = async (e: MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault();

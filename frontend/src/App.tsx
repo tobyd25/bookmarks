@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import CreateItemModal from "./components/CreateItemModal";
 import EditItemModal from "./components/EditItemModal";
+import { type ItemType } from "./types/item";
 
 interface Entry {
 	id: number;
@@ -18,6 +19,8 @@ function App() {
 	const [entries, setEntries] = useState<Entry[]>([]);
 	const createItemModalRef = useRef<HTMLDialogElement>(null);
 	const editItemModalRef = useRef<HTMLDialogElement>(null);
+
+	const [types, setTypes] = useState<ItemType[]>([]);
 
 	const openCreateModal = () => createItemModalRef.current?.showModal();
 	const openEditModal = () => editItemModalRef.current?.showModal();
@@ -36,7 +39,19 @@ function App() {
 	};
 
 	useEffect(() => {
+		const fetchTypes = async () => {
+			try {
+				const response = await fetch("/api/types");
+				if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+				const data = await response.json();
+				setTypes(data);
+			} catch (error) {
+				console.error(`Failed to fetch types: ${error}`);
+			}
+		};
+
 		getEntries();
+		fetchTypes();
 	}, []);
 
 	const filteredEntries = entries.filter(
@@ -97,6 +112,12 @@ function App() {
 						<EditItemModal
 							ref={editItemModalRef}
 							onEdit={getEntries}
+							itemData={{
+								title: entry.title,
+								content: entry.content,
+								type: parseInt(entry.type),
+								note: entry.note,
+							}}
 							itemId={entry.id}
 						/>
 					</li>
