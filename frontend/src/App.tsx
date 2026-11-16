@@ -88,7 +88,7 @@ function App() {
 							<div className="text-[1.5rem]">{entry.title}</div>
 							<div className="text-[1rem]">{entry.content}</div>
 							<div className="text-[1rem] text-gray-500">
-								{entry.created_at}
+								Created: {entry.created_at}
 							</div>
 						</div>
 						<button className="btn" onClick={openEditModal}>
