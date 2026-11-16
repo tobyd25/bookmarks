@@ -60,11 +60,6 @@ const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 				});
 
 				if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-
-				const data = await response.json();
-
-				if (!data.lastInsertRowid)
-					throw new Error("Server did not return a valid item ID");
 			} catch (error) {
 				console.error(`Failed to edit item: ${error}`);
 				return;
