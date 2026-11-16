@@ -83,7 +83,7 @@ function App() {
 
 			<ul className="list divide-y divide-gray-300">
 				{filteredEntries.map((entry) => (
-					<li className="list-row" key={entry.id}>
+					<li className="list-row flex justify-between" key={entry.id}>
 						<div>
 							<div className="text-[1.5rem]">{entry.title}</div>
 							<div className="text-[1rem]">{entry.content}</div>
