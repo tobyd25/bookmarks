@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import CreateItemModal from "./components/CreateItemModal";
 import EditItemModal from "./components/EditItemModal";
-import { type ItemType } from "./types/item";
+import { type ItemData } from "./types/item";
 
 interface Entry {
 	id: number;
@@ -17,13 +17,29 @@ function App() {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const [entries, setEntries] = useState<Entry[]>([]);
+
 	const createItemModalRef = useRef<HTMLDialogElement>(null);
+	const [editingItem, setEditingItem] = useState<{
+		data: ItemData;
+		id: number;
+	} | null>(null);
 	const editItemModalRef = useRef<HTMLDialogElement>(null);
 
-	const [types, setTypes] = useState<ItemType[]>([]);
-
 	const openCreateModal = () => createItemModalRef.current?.showModal();
-	const openEditModal = () => editItemModalRef.current?.showModal();
+	const openEditModal = (item: Entry) => {
+		setEditingItem({
+			data: {
+				title: item.title,
+				content: item.content,
+				type: parseInt(item.type),
+				note: item.note,
+			},
+			id: item.id,
+		});
+
+		// fix modal not showing on first click
+		setTimeout(() => editItemModalRef.current?.showModal(), 0);
+	};
 
 	const getEntries = async () => {
 		try {
@@ -39,19 +55,7 @@ function App() {
 	};
 
 	useEffect(() => {
-		const fetchTypes = async () => {
-			try {
-				const response = await fetch("/api/types");
-				if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-				const data = await response.json();
-				setTypes(data);
-			} catch (error) {
-				console.error(`Failed to fetch types: ${error}`);
-			}
-		};
-
 		getEntries();
-		fetchTypes();
 	}, []);
 
 	const filteredEntries = entries.filter(
@@ -96,6 +100,18 @@ function App() {
 
 			<CreateItemModal ref={createItemModalRef} onCreate={getEntries} />
 
+			{editingItem && (
+				<EditItemModal
+					ref={editItemModalRef}
+					onEdit={() => {
+						getEntries();
+						setEditingItem(null);
+					}}
+					itemData={editingItem.data}
+					itemId={editingItem.id}
+				/>
+			)}
+
 			<ul className="list divide-y divide-gray-300">
 				{filteredEntries.map((entry) => (
 					<li className="list-row flex justify-between" key={entry.id}>
@@ -106,20 +122,9 @@ function App() {
 								Created: {entry.created_at}
 							</div>
 						</div>
-						<button className="btn" onClick={openEditModal}>
+						<button className="btn" onClick={() => openEditModal(entry)}>
 							Edit
 						</button>
-						<EditItemModal
-							ref={editItemModalRef}
-							onEdit={getEntries}
-							itemData={{
-								title: entry.title,
-								content: entry.content,
-								type: parseInt(entry.type),
-								note: entry.note,
-							}}
-							itemId={entry.id}
-						/>
 					</li>
 				))}
 			</ul>

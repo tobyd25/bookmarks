@@ -14,6 +14,17 @@ interface Props {
 	itemId: number;
 }
 
+const getTypeObject = (typeId: number, typeList: ItemType[]) => {
+	for (const t of typeList) {
+		if (t.id == typeId) return t;
+	}
+	console.error(`Error: Failed to get type object of id "${typeId}".`);
+	return {
+		id: 0,
+		name: "None",
+	};
+};
+
 const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 	({ onEdit, itemData, itemId }: Props, ref) => {
 		const [types, setTypes] = useState<ItemType[]>([]);
@@ -25,18 +36,6 @@ const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 			id: 0,
 			name: "None",
 		});
-
-		const getTypeObject = (typeId: number, typeList: ItemType[]) => {
-			for (const t of typeList) {
-				if (t.id == typeId) return t;
-			}
-			console.error(`Error: Failed to get type object of id "${typeId}".`);
-			console.error(types);
-			return {
-				id: 0,
-				name: "None",
-			};
-		};
 
 		useEffect(() => {
 			const fetchTypes = async () => {
@@ -53,6 +52,16 @@ const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 
 			fetchTypes();
 		}, [itemData.type]);
+
+		useEffect(() => {
+			setTitle(itemData.title);
+			setContent(itemData.content);
+			setNote(itemData.note);
+
+			if (types.length > 0) {
+				setSelectedType(getTypeObject(itemData.type, types));
+			}
+		}, [itemData, types]);
 
 		const editItem = async (e: MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault();
