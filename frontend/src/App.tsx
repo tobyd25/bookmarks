@@ -54,6 +54,18 @@ function App() {
 		}
 	};
 
+	const handleDelete = async (itemId: number) => {
+		try {
+			const response = await fetch(`/api/items/${itemId}`, {
+				method: "DELETE",
+			});
+			if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+			getEntries();
+		} catch (error) {
+			console.error(`Failed to delete item: ${error}`);
+		}
+	};
+
 	useEffect(() => {
 		getEntries();
 	}, []);
@@ -122,9 +134,17 @@ function App() {
 								Created: {entry.created_at}
 							</div>
 						</div>
-						<button className="btn" onClick={() => openEditModal(entry)}>
-							Edit
-						</button>
+						<div className="flex gap-4">
+							<button className="btn" onClick={() => openEditModal(entry)}>
+								Edit
+							</button>
+							<button
+								className="btn btn-error text-white"
+								onClick={() => handleDelete(entry.id)}
+							>
+								Delete
+							</button>
+						</div>
 					</li>
 				))}
 			</ul>
