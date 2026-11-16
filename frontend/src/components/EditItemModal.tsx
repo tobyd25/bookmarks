@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { type ItemType, type ItemData } from "../types/item";
+import { useItemTypes } from "../hooks/useItemTypes";
 
 interface Props {
 	onEdit: () => void;
@@ -27,7 +28,11 @@ const getTypeObject = (typeId: number, typeList: ItemType[]) => {
 
 const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 	({ onEdit, itemData, itemId }: Props, ref) => {
-		const [types, setTypes] = useState<ItemType[]>([]);
+		const {
+			itemTypes,
+			isLoading: itemTypesLoading,
+			error: itemTypesError,
+		} = useItemTypes();
 
 		const [title, setTitle] = useState(itemData.title);
 		const [content, setContent] = useState(itemData.content);
@@ -38,30 +43,14 @@ const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 		});
 
 		useEffect(() => {
-			const fetchTypes = async () => {
-				try {
-					const response = await fetch("/api/types");
-					if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-					const data = await response.json();
-					setTypes(data);
-					setSelectedType(getTypeObject(itemData.type, data));
-				} catch (error) {
-					console.error(`Failed to fetch types: ${error}`);
-				}
-			};
-
-			fetchTypes();
-		}, [itemData.type]);
-
-		useEffect(() => {
 			setTitle(itemData.title);
 			setContent(itemData.content);
 			setNote(itemData.note);
 
-			if (types.length > 0) {
-				setSelectedType(getTypeObject(itemData.type, types));
+			if (itemTypes.length > 0) {
+				setSelectedType(getTypeObject(itemData.type, itemTypes));
 			}
-		}, [itemData, types]);
+		}, [itemData, itemTypes]);
 
 		const editItem = async (e: MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault();
@@ -136,7 +125,7 @@ const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 									{selectedType.name}
 								</div>
 								<ul tabIndex={-1} className="dropdown-content menu bg-gray-100">
-									{types.map((type) => (
+									{itemTypes.map((type) => (
 										<li key={type.id}>
 											<button onClick={(e) => selectType(e, type)}>
 												{type.name}

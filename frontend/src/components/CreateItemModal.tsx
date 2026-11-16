@@ -1,12 +1,7 @@
-import {
-	forwardRef,
-	useEffect,
-	useState,
-	type MouseEvent,
-	type RefObject,
-} from "react";
+import { forwardRef, useState, type MouseEvent, type RefObject } from "react";
 
 import { type ItemType, type ItemData } from "../types/item";
+import { useItemTypes } from "../hooks/useItemTypes";
 
 interface Props {
 	onCreate: () => void;
@@ -14,7 +9,11 @@ interface Props {
 
 const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 	({ onCreate }: Props, ref) => {
-		const [types, setTypes] = useState<ItemType[]>([]);
+		const {
+			itemTypes,
+			isLoading: itemTypesLoading,
+			error: itemTypesError,
+		} = useItemTypes();
 
 		const [title, setTitle] = useState("");
 		const [content, setContent] = useState("");
@@ -23,21 +22,6 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 			name: "None",
 		});
 		const [note, setNote] = useState("");
-
-		useEffect(() => {
-			const fetchTypes = async () => {
-				try {
-					const response = await fetch("/api/types");
-					if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-					const data = await response.json();
-					setTypes(data);
-				} catch (error) {
-					console.error(`Failed to fetch types: ${error}`);
-				}
-			};
-
-			fetchTypes();
-		}, []);
 
 		const createItem = async (e: MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault();
@@ -117,7 +101,7 @@ const CreateItemModal = forwardRef<HTMLDialogElement, Props>(
 									{selectedType.name}
 								</div>
 								<ul tabIndex={-1} className="dropdown-content menu bg-gray-100">
-									{types.map((type) => (
+									{itemTypes.map((type) => (
 										<li key={type.id}>
 											<button onClick={(e) => selectType(e, type)}>
 												{type.name}
