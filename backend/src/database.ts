@@ -7,7 +7,8 @@ import type { DbClient } from "./types/db-client.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const db = new Database(path.join(__dirname, "../database.db"));
+const dbPath = process.env.DATABASE_URL || path.join(__dirname, "../database.db");
+const db = new Database(dbPath);
 
 export default fp((fastify) => {
 	const schema = fs.readFileSync(path.join(__dirname, "schema.sql"), { encoding: "utf-8" });
