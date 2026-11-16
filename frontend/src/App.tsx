@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import CreateItemModal from "./components/CreateItemModal";
+import EditItemModal from "./components/EditItemModal";
 
 interface Entry {
 	id: number;
@@ -16,8 +17,10 @@ function App() {
 
 	const [entries, setEntries] = useState<Entry[]>([]);
 	const createItemModalRef = useRef<HTMLDialogElement>(null);
+	const editItemModalRef = useRef<HTMLDialogElement>(null);
 
 	const openCreateModal = () => createItemModalRef.current?.showModal();
+	const openEditModal = () => editItemModalRef.current?.showModal();
 
 	const getEntries = async () => {
 		try {
@@ -88,6 +91,14 @@ function App() {
 								{entry.created_at}
 							</div>
 						</div>
+						<button className="btn" onClick={openEditModal}>
+							Edit
+						</button>
+						<EditItemModal
+							ref={editItemModalRef}
+							onEdit={getEntries}
+							itemId={entry.id}
+						/>
 					</li>
 				))}
 			</ul>
