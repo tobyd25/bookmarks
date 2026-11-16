@@ -91,65 +91,78 @@ const EditItemModal = forwardRef<HTMLDialogElement, Props>(
 				<div className="modal-box p-8">
 					<h3 className="font-bold mb-4">Edit Item</h3>
 					<form>
-						<fieldset className="fieldset">
-							<label className="label" htmlFor="title">
-								Title
-							</label>
-							<input
-								type="text"
-								id="title"
-								className="input w-full mb-4"
-								placeholder="Title"
-								value={title}
-								onChange={(e) => setTitle(e.target.value)}
-							/>
-
-							<label className="label" htmlFor="content">
-								Content
-							</label>
-							<textarea
-								className="textarea w-full mb-4"
-								id="content"
-								placeholder="Content"
-								value={content}
-								onChange={(e) => setContent(e.target.value)}
-							/>
-
-							<label className="label">Type</label>
-							<div className="dropdown">
-								<div
-									id="type"
-									tabIndex={0}
-									className="btn btn-outline text-gray-600 border-gray-300 m-0"
-								>
-									{selectedType.name}
-								</div>
-								<ul tabIndex={-1} className="dropdown-content menu bg-gray-100">
-									{itemTypes.map((type) => (
-										<li key={type.id}>
-											<button onClick={(e) => selectType(e, type)}>
-												{type.name}
-											</button>
-										</li>
-									))}
-								</ul>
+						{itemTypesLoading ? (
+							<div className="flex w-full h-20 justify-center">
+								<span className="loading loading-spinner loading-xl"></span>
 							</div>
+						) : itemTypesError ? (
+							<div className="alert m-8">
+								<span>Error: {itemTypesError}</span>
+							</div>
+						) : (
+							<fieldset className="fieldset">
+								<label className="label" htmlFor="title">
+									Title
+								</label>
+								<input
+									type="text"
+									id="title"
+									className="input w-full mb-4"
+									placeholder="Title"
+									value={title}
+									onChange={(e) => setTitle(e.target.value)}
+								/>
 
-							<label className="label" htmlFor="note">
-								Note
-							</label>
-							<textarea
-								className="textarea w-full mb-4"
-								id="note"
-								placeholder="Note"
-								value={note}
-								onChange={(e) => setNote(e.target.value)}
-							></textarea>
+								<label className="label" htmlFor="content">
+									Content
+								</label>
+								<textarea
+									className="textarea w-full mb-4"
+									id="content"
+									placeholder="Content"
+									value={content}
+									onChange={(e) => setContent(e.target.value)}
+								/>
 
-							<button className="btn" onClick={editItem}>
-								Edit
-							</button>
-						</fieldset>
+								<label className="label">Type</label>
+								<div className="dropdown">
+									<div
+										id="type"
+										tabIndex={0}
+										className="btn btn-outline text-gray-600 border-gray-300 m-0"
+									>
+										{selectedType.name}
+									</div>
+									<ul
+										tabIndex={-1}
+										className="dropdown-content menu bg-gray-100"
+									>
+										{itemTypes.map((type) => (
+											<li key={type.id}>
+												<button onClick={(e) => selectType(e, type)}>
+													{type.name}
+												</button>
+											</li>
+										))}
+									</ul>
+								</div>
+
+								<label className="label" htmlFor="note">
+									Note
+								</label>
+								<textarea
+									className="textarea w-full mb-4"
+									id="note"
+									placeholder="Note"
+									value={note}
+									onChange={(e) => setNote(e.target.value)}
+								></textarea>
+
+								<button className="btn" onClick={editItem}>
+									Edit
+								</button>
+							</fieldset>
+						)}
 					</form>
 					<form method="dialog">
 						<button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
