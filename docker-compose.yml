@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    image: bookmarks-backend
+    ports:
+      - "${PORT}:${PORT}"
+    restart: always
+    volumes:
+      - ./backend/data:/app/data

@@ -7,7 +7,7 @@ import type { DbClient } from "./types/db-client.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const dbPath = process.env.DATABASE_URL || path.join(__dirname, "../database.db");
+const dbPath = process.env.DATABASE_URL || path.join(__dirname, "../data/database.db");
 const db = new Database(dbPath);
 
 export default fp((fastify) => {
