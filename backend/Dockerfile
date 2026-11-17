@@ -1,10 +1,6 @@
 # Stage 1 build
-FROM node:22-slim AS builder
+FROM bookmarks-backend-base AS builder
 WORKDIR /app
-
-# install packages and remove package lists
-RUN apt-get update && apt-get install -y python3 build-essential && rm -rf /var/lib/apt/lists/*
-RUN npm i -g pnpm node-gyp
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 RUN pnpm i

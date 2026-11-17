@@ -1,4 +1,10 @@
 services:
+  backend-base:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.base
+    image: bookmarks-backend-base
+
   backend:
     build: ./backend
     env_file: ./backend/.env

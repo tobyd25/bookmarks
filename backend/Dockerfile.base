@@ -1,0 +1,5 @@
+FROM node:22-slim
+
+# install packages and remove package lists
+RUN apt-get update && apt-get install -y python3 build-essential && rm -rf /var/lib/apt/lists/*
+RUN npm i -g pnpm node-gyp
