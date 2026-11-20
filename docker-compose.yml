@@ -10,7 +10,7 @@ services:
     env_file: ./backend/.env
     image: bookmarks-backend
     ports:
-      - "${PORT}:${PORT}"
+      - "${PORT:-3000}:${PORT:-3000}"
     restart: always
     volumes:
       - ./backend/data:/app/data
